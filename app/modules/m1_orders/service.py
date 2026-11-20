@@ -44,7 +44,8 @@ def build_orders(rows):
                 volume = order.first_volume + offset
                 first = 1 if order.numbering == "yearly" else order.first_issue + offset * order.issues_per_year
                 last = first + order.issues_per_year - 1
-                years_by_chain.append({"chain": chain, "year": year, "volume": volume, "first": first, "last": last})
+                years_by_chain.append({"chain": chain, "year": year, "volume": volume, "first": first,
+                                       "last": last, "numbering": order.numbering})
                 slots.extend({"chain": chain, "year": year, "volume": volume, "issue": issue}
                              for issue in range(first, last + 1))
             if len(slots) > 10000:

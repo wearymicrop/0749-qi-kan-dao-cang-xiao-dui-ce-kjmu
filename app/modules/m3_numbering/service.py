@@ -8,7 +8,7 @@ def normalize_receipts(intake):
     rows = sorted(intake["accepted"] + intake["conflicts"], key=lambda receipt: receipt["line"])
     for row in rows:
         try:
-            numbers = parse_numbering(row["volume"], row["issue"], row["kind"])
+            numbers = parse_numbering(row["volume"], row["issue"], row["kind"], row.get("note_id"))
         except LedgerError as error:
             rejected.append({**row, **error.payload()})
         else:

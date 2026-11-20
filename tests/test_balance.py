@@ -1,6 +1,7 @@
 def test_dirty_issue_and_row_conservation(stages):
     result = stages["balance"]
-    assert result["totals"] == {"expected": 14, "covered": 7, "missing": 4, "disputed": 3, "supplements": 3, "difference": 0}
+    assert result["totals"] == {"expected": 14, "covered": 7, "missing": 4, "disputed": 3, "supplements": 3,
+                                "holdings": 8, "difference": 0}
     assert result["row_totals"] == {"input": 22, "coverage": 9, "supplements": 3, "duplicates": 1, "isolated": 9, "difference": 0}
     assert result["status"] == "MATCHED"
 

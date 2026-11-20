@@ -15,3 +15,4 @@ class Receipt(BaseModel):
     volume: Text
     issue: Text
     kind: Literal["regular", "supplement"] = "regular"
+    note_id: Text | None = None

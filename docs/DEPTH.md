@@ -11,6 +11,7 @@
 | M5 刊名沿革 | 按出版年度追溯刊名所属订阅链 | `GET /api/titles/dirty` | `app/modules/m5_titles/service.py` | `tests/test_titles.py` |
 | M6 缺刊勾稽 | 比对期位与来刊行的分区账目 | `GET /api/balance/dirty` | `app/modules/m6_balance/service.py` | `tests/test_balance.py` |
 | M7 证据寄送 | 按输入与规则摘要封存并重跑证据 | `POST /api/runs` | `app/modules/m7_dispatch/service.py` `app/store.py` | `tests/test_dispatch.py` |
+| M8 出版说明 | 登记跨年度合期的出版方依据并校验年度卷界 | `GET /api/notes/dirty` | `app/modules/m8_notes/service.py` | `tests/test_cross_year.py` |
 
 ## 陷阱登记
 
@@ -28,7 +29,14 @@
 | TRAP-10 | 改刊名后继续订阅 | 同一订阅被拆为两条链 | 按出版年度解析新旧刊名 | `app/modules/m5_titles/service.py` | `tests/test_titles.py::test_title_change_keeps_chain` |
 | TRAP-11 | 合期与单期部分重叠 | 两个期位全部进入争议 | 只标记重叠期位 | `app/modules/m6_balance/slots.py` | `tests/test_balance.py::test_overlap_only_disputes_shared_slot` |
 | TRAP-12 | 同份数据重跑 | 生成第二份档案并覆盖时间 | 使用版本与输入摘要定位首份归档 | `app/store.py` | `tests/test_dispatch.py::test_archive_and_rerun_keep_digest_and_first_result` |
+| TRAP-13 | 跨年合期只归一个年度 | 另一年度期位凭空缺刊、依据断链 | 两个年度各挂同一验收号的期位依据，馆藏按验收号去重 | `app/modules/m6_balance/slots.py` | `tests/test_cross_year.py::test_one_physical_item_traces_to_slots_in_both_years_but_counts_once` |
+| TRAP-14 | 一件实物在两年各算一次 | 馆藏件数虚增、对账不平 | `totals.holdings` 按验收号去重，期位覆盖与实物件数分列 | `app/modules/m6_balance/service.py` | `tests/test_cross_year.py::test_one_physical_item_traces_to_slots_in_both_years_but_counts_once` |
+| TRAP-15 | 跨年卷界不符被部分采信 | 半个合期补齐缺刊制造假覆盖 | 说明年度、卷号、边界期位任一不符整条隔离 | `app/modules/m4_combined/claims.py` | `tests/test_cross_year.py::test_wrong_boundary_is_never_partially_applied` |
+| TRAP-16 | 逐年复位的跨年范围写成逆序 | 被 TRAP-07 当作坏行误杀 | 仅引用出版说明时放行逆序范围，由 M4 按卷界校验 | `app/modules/m3_numbering/parser.py` | `tests/test_cross_year.py::test_descending_range_without_note_is_still_rejected` |
+| TRAP-17 | 跨年验收号重试 | 同一实物在两个年度重复计入藏 | 重复回传仍在 M2 去重，跨年展期只展开一次 | `app/modules/m2_receipts/service.py` | `tests/test_cross_year.py::test_cross_year_replay_is_counted_once` |
 
 ## 对账规则
 
 应到期位 = 已覆盖 + 缺刊 + 争议。来刊行 = 正刊候选 + 增刊 + 重复回传 + 隔离。两个差额均为零时返回 `MATCHED`，缺刊和争议仍需处理。
+
+跨年度合期不改变上面的恒等式：一件实物在两个年度各贡献一个已覆盖期位，但 `totals.holdings` 以验收号去重，只计一件在藏。出版说明状态分三档——`covered`（挂接期位全部覆盖且无争议）、`disputed`（至少一个挂接期位争议）、`pending`（没有任何期位挂接，通常因整条隔离未核清），隔离原因回填 `blocking_codes`。

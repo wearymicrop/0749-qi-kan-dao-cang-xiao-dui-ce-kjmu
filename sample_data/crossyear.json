@@ -1,0 +1,150 @@
+{
+  "rules": [
+    {
+      "chain": "CST",
+      "from_year": 2025,
+      "to_year": 2026,
+      "first_volume": 17,
+      "issues_per_year": 4,
+      "numbering": "yearly"
+    },
+    {
+      "chain": "GEO",
+      "from_year": 2025,
+      "to_year": 2026,
+      "first_volume": 3,
+      "issues_per_year": 3,
+      "numbering": "continuous",
+      "first_issue": 7
+    }
+  ],
+  "titles": [
+    {
+      "chain": "CST",
+      "title": "海岸观测通报",
+      "from_year": 2025,
+      "to_year": 2025
+    },
+    {
+      "chain": "CST",
+      "title": "海岸观测季刊",
+      "from_year": 2026,
+      "to_year": 2026
+    },
+    {
+      "chain": "GEO",
+      "title": "方志资料辑刊",
+      "from_year": 2025,
+      "to_year": 2026
+    }
+  ],
+  "publication_notes": [
+    {
+      "note_id": "PN-CST-2025-04",
+      "chain": "CST",
+      "title": "海岸观测季刊",
+      "span": [2025, 2026],
+      "statement": "出版方函 2026-编字 07 号：第 17 卷第 4 期与第 18 卷第 1 期合订为一件跨年合期，沿用改刊后刊名登记。"
+    },
+    {
+      "note_id": "PN-GEO-2025-09",
+      "chain": "GEO",
+      "title": "方志资料辑刊",
+      "span": [2025, 2026],
+      "statement": "出版方函 2026-编字 11 号：总第 9 期与总第 10 期合订出版，跨 2025、2026 两个年度。"
+    }
+  ],
+  "receipts": [
+    {
+      "accession": "00031",
+      "title": "海岸观测通报",
+      "year": 2025,
+      "volume": "17",
+      "issue": "1",
+      "kind": "regular"
+    },
+    {
+      "accession": "00032",
+      "title": "海岸观测通报",
+      "year": 2025,
+      "volume": "17",
+      "issue": "2-3",
+      "kind": "regular"
+    },
+    {
+      "accession": "00033",
+      "title": "海岸观测通报",
+      "year": 2025,
+      "volume": "17",
+      "issue": "4-1",
+      "kind": "regular",
+      "note_id": "PN-CST-2025-04"
+    },
+    {
+      "accession": "00034",
+      "title": "海岸观测季刊",
+      "year": 2026,
+      "volume": "18",
+      "issue": "2",
+      "kind": "regular"
+    },
+    {
+      "accession": "00035",
+      "title": "海岸观测季刊",
+      "year": 2026,
+      "volume": "18",
+      "issue": "3",
+      "kind": "regular"
+    },
+    {
+      "accession": "00041",
+      "title": "方志资料辑刊",
+      "year": 2025,
+      "volume": "3",
+      "issue": "7-8",
+      "kind": "regular"
+    },
+    {
+      "accession": "00042",
+      "title": "方志资料辑刊",
+      "year": 2025,
+      "volume": "3",
+      "issue": "9-10",
+      "kind": "regular",
+      "note_id": "PN-GEO-2025-09"
+    },
+    {
+      "accession": "00043",
+      "title": "方志资料辑刊",
+      "year": 2026,
+      "volume": "4",
+      "issue": "11",
+      "kind": "regular"
+    },
+    {
+      "accession": "00044",
+      "title": "方志资料辑刊",
+      "year": 2026,
+      "volume": "4",
+      "issue": "12",
+      "kind": "regular"
+    },
+    {
+      "accession": "00045",
+      "title": "方志资料辑刊",
+      "year": 2026,
+      "volume": "4",
+      "issue": "10",
+      "kind": "regular"
+    },
+    {
+      "accession": "00042",
+      "title": "方志资料辑刊",
+      "year": 2025,
+      "volume": "3",
+      "issue": "9-10",
+      "kind": "regular",
+      "note_id": "PN-GEO-2025-09"
+    }
+  ]
+}

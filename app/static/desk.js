@@ -1,9 +1,9 @@
-import { element, folio, paintEvidence, paintExtras, stageTable, states } from './evidence.js';
+import { element, folio, paintEvidence, paintExtras, paintNotes, stageTable, states } from './evidence.js';
 
 const $ = id => document.getElementById(id);
 const sample = $('sample');
 const selectionButtons = [...document.querySelectorAll('[data-stage]')];
-const metrics = { expected: '应到期位', covered: '已覆盖', missing: '缺刊', disputed: '争议', supplements: '增刊件' };
+const metrics = { expected: '应到期位', covered: '已覆盖', missing: '缺刊', disputed: '争议', holdings: '在藏实物', supplements: '增刊件' };
 let ledger = null;
 let stage = 'balance';
 let currentSource = null;
@@ -37,8 +37,11 @@ function paintRows() {
     const row = $('register').insertRow();
     row.dataset.status = slot.status;
     row.classList.toggle('selected', selected === slot);
+    row.classList.toggle('cross-year', slot.cross_year);
     row.insertCell().textContent = slot.chain;
-    row.insertCell().textContent = folio(slot);
+    const folioCell = row.insertCell();
+    folioCell.append(element('span', folio(slot)));
+    if (slot.cross_year) folioCell.append(element('em', `跨年 · ${slot.note_id}`, 'cross-badge'));
     row.insertCell().append(element('span', states[slot.status], 'seal'));
     row.insertCell().append(element('code', slot.evidence.map(item => item.accession).join(' / ') || '—'));
     const button = element('button', '看原件');
@@ -105,6 +108,7 @@ async function preview() {
   $('register').replaceChildren();
   $('sum').textContent = '';
   $('extras').replaceChildren();
+  paintNotes([]);
   paintEvidence(null);
   try {
     let source = { sample: choice };
@@ -131,6 +135,7 @@ async function preview() {
     $('edition-note').textContent = `${Math.min(...years)}—${Math.max(...years)} 年 · ${data.row_totals.input} 条来刊记录`;
     paintRows();
     paintExtras(claims.supplements, data.quarantine, intake.duplicates);
+    paintNotes(data.note_summary);
     $('status').textContent = '清册已核算';
     if (stage !== 'balance' && stage !== 'runs') readStage(stage);
   } catch (error) {

@@ -1,5 +1,6 @@
 export const states = { covered: '已覆盖', missing: '缺刊', disputed: '争议' };
 const labels = JSON.parse(document.querySelector('#reason-labels').textContent);
+const noteStates = JSON.parse(document.querySelector('#note-status-labels').textContent);
 
 export function element(tag, text, className) {
   const result = document.createElement(tag);
@@ -20,11 +21,38 @@ export function paintEvidence(slot) {
     return;
   }
   panel.replaceChildren(element('h3', folio(slot)), element('p', labels[slot.code] || states[slot.status]));
+  if (slot.cross_year) {
+    const banner = element('p', `跨年合期依据：${slot.note_id}，同一实物在两个年度各挂一次期位、在藏只计一件`, 'note-banner');
+    panel.append(banner);
+  }
   for (const row of slot.evidence) {
     const record = element('article');
     record.append(element('div', `原始行 ${row.line} · ${row.accession}`, 'accession'),
       element('p', row.raw.title), element('p', `原录 ${row.raw.volume} 卷 ${row.raw.issue} 期`));
+    if (row.raw.note_id) record.append(element('p', `引用出版说明 ${row.raw.note_id}`, 'note-ref'));
     panel.append(record);
+  }
+}
+
+export function paintNotes(summary) {
+  const panel = document.querySelector('#notes-panel');
+  panel.replaceChildren();
+  if (!summary.length) {
+    panel.append(element('p', '本清册没有跨年度合期，无需出版说明。', 'empty-note'));
+    return;
+  }
+  for (const note of summary) {
+    const card = element('article');
+    card.dataset.noteStatus = note.status;
+    const heading = element('h3', `${note.note_id} · ${note.chain}`);
+    card.append(heading,
+      element('p', note.statement, 'note-statement'),
+      element('p', `涉及年度：${note.years.join('、')} ｜ 卷号：${note.volumes.join('、')} ｜ 刊名：${note.title}`, 'note-meta'),
+      element('p', `${noteStates[note.status] || note.status} ｜ 已覆盖期位 ${note.covered} ｜ 争议期位 ${note.disputed} ｜ 挂接期位 ${note.slots}`, 'note-state'));
+    if (note.blocking_codes.length) {
+      card.append(element('p', `未核清原因：${note.blocking_codes.map(code => labels[code] || code).join('、')}`, 'note-block'));
+    }
+    panel.append(card);
   }
 }
 
@@ -49,6 +77,7 @@ const stageColumns = {
   receipts: ['原始行', '验收号', '刊名', '采信结论'],
   numbering: ['原始行', '验收号', '原录', '解析结果'],
   combined: ['原始行', '订阅链', '验收号', '展开期位'],
+  notes: ['说明编号', '订阅链', '涉及年度', '出版说明'],
   titles: ['订阅链', '刊名', '起年', '止年'],
 };
 
@@ -60,7 +89,10 @@ function stageRows(stage, data) {
     case 'numbering': return [...data.parsed, ...data.isolated].sort((a,b) => a.line - b.line)
       .map(row => [row.line, row.accession, `${row.volume} / ${row.issue}`, row.numbers ? `${row.numbers.volume} 卷 ${row.numbers.first}–${row.numbers.last}` : labels[row.code]]);
     case 'combined': return [...data.coverage, ...data.supplements, ...data.isolated].sort((a,b) => a.line - b.line)
-      .map(row => [row.line, row.chain, row.accession, row.issues?.join('、') || labels[row.code] || '增刊单列']);
+      .map(row => [row.line, row.chain, row.accession,
+        row.spans ? row.spans.map(span => `${span.year} 年 ${span.issues.join('、')} 期`).join('；')
+          : (row.issues?.join('、') || labels[row.code] || '增刊单列')]);
+    case 'notes': return data.notes.map(row => [row.note_id, row.chain, row.years.join('、'), row.statement]);
     case 'titles': return data.periods.map(row => [row.chain, row.title, row.from_year, row.to_year]);
     default: return [];
   }

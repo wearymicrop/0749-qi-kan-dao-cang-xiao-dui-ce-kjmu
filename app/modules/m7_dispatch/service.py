@@ -11,5 +11,6 @@ def dispatch(data, sample=None):
     manifest = make_manifest(data, sample, round((perf_counter() - started) * 1000, 2))
     document = {"id": manifest["digest"], "manifest": manifest,
                 "result": {"balance": stages["balance"], "supplements": stages["combined"]["supplements"],
-                           "duplicates": stages["receipts"]["duplicates"], "titles": stages["titles"]["periods"]}}
+                           "duplicates": stages["receipts"]["duplicates"], "titles": stages["titles"]["periods"],
+                           "notes": stages["notes"]["notes"]}}
     return archive(document, data)

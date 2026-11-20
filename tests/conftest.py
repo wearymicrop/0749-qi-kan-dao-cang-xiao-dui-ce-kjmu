@@ -17,6 +17,11 @@ def clean():
 
 
 @pytest.fixture
+def crossyear():
+    return load_sample("crossyear")
+
+
+@pytest.fixture
 def stages(dirty):
     return calculate(dirty)
 

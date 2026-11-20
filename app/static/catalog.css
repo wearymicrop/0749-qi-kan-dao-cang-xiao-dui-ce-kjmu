@@ -1,4 +1,4 @@
-.kpis { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); margin-bottom: var(--gap); border-bottom: 1px solid var(--line); }
+.kpis { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); margin-bottom: var(--gap); border-bottom: 1px solid var(--line); }
 .kpi { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 12px var(--pad); border-right: 1px solid var(--line); }
 .kpi:last-child { border: 0; }
 .kpi span { font-size: 12px; color: var(--muted); }
@@ -31,11 +31,24 @@ code, .sum, .accession { font-family: var(--mono); font-variant-numeric: tabular
 .evidence article { padding: 12px 0; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
 .evidence article:first-of-type { margin-top: 15px; }
 .accession { font-size: 13px; color: var(--accent); margin-bottom: 4px; }
-.supplement, .stage, .archive { margin-top: var(--gap); }
+.supplement, .stage, .archive, .notes { margin-top: var(--gap); }
 .extras { display: flex; flex-wrap: wrap; gap: 5px 25px; padding: 8px var(--pad); }
 .extras details { flex: 1 1 220px; min-width: 0; }
 summary { cursor: pointer; color: var(--accent); padding: 5px 0; }
 .extras p { margin-top: 5px; overflow-wrap: anywhere; }
+.notes-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; padding: var(--pad); }
+.notes-body article { border: 1px solid var(--line); border-left: 3px solid var(--ok); padding: 10px 13px; background: var(--panel); min-width: 0; }
+.notes-body article[data-note-status="disputed"] { border-left-color: var(--bad); }
+.notes-body article[data-note-status="pending"] { border-left-color: var(--warn); }
+.notes-body h3 { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+.notes-body p { font-size: 12px; color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
+.notes-body .note-statement { color: var(--paper-ink); }
+.notes-body .note-block { color: var(--bad); font-weight: 600; }
+.empty-note { padding: var(--pad); color: var(--muted); font-size: 13px; }
+.cross-badge { display: block; margin-top: 2px; font-style: normal; font-size: 11px; color: var(--accent); font-family: var(--mono); }
+tr.cross-year td:first-child { box-shadow: inset 2px 0 var(--accent); }
+.note-banner { color: var(--accent) !important; font-weight: 600; }
+.note-ref { font-family: var(--mono); font-size: 12px !important; }
 .stage-body { max-height: 310px; overflow: auto; }
 .archive-tools { padding: 11px var(--pad); }
 #run-metadata { color: var(--muted); overflow-wrap: anywhere; }

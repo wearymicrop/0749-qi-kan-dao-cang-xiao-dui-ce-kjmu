@@ -52,6 +52,10 @@
           <div id="evidence" class="evidence" aria-live="polite">请选择一个期位。</div>
         </aside>
       </div>
+      <section class="panel notes" aria-labelledby="notes-title">
+        <div class="panel-heading"><h2 id="notes-title">跨年出版说明</h2><span class="folio">采信依据 · 年度挂接</span></div>
+        <div id="notes-panel" class="notes-body" aria-live="polite"></div>
+      </section>
       <section class="panel supplement" aria-labelledby="extras-title">
         <div class="panel-heading"><h2 id="extras-title">增刊与隔离</h2></div>
         <div class="extras" id="extras"></div>
@@ -68,5 +72,6 @@
     <footer><span id="status" role="status">读取清册…</span><span>规则 {{ version }} · 年度期位 · UTC</span><a href="/docs">接口文档</a></footer>
   </div>
   <script type="application/json" id="reason-labels">{{ labels|tojson }}</script>
+  <script type="application/json" id="note-status-labels">{{ note_status|tojson }}</script>
 </body>
 </html>

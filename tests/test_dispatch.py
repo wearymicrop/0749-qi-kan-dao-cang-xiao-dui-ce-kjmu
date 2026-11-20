@@ -59,3 +59,28 @@ def test_missing_and_unspecified_source_errors(client):
     assert client.get("/api/runs/unknown").json()["code"] == "RUN_NOT_FOUND"
     assert client.post("/api/runs", json={}).json()["code"] == "CHOOSE_SOURCE"
     assert client.post("/api/runs", json={"sample": "absent"}).status_code == 404
+
+
+def test_cross_year_rerun_keeps_single_archive_and_note_evidence(client):
+    first = client.post("/api/runs", json={"sample": "crossyear"}).json()
+    again = client.post(f"/api/runs/{first['id']}/rerun").json()
+    assert first["reused"] is False and again["reused"] is True and again["id"] == first["id"]
+    with sqlite3.connect(database_path()) as db:
+        assert db.execute("SELECT COUNT(*) FROM runs").fetchone()[0] == 1
+    exported = client.get(f"/api/runs/{first['id']}/export").json()
+    assert [note["note_id"] for note in exported["result"]["notes"]] == [
+        "PN-CST-2025-04", "PN-GEO-2025-09"]
+    boundary = next(slot for slot in exported["result"]["balance"]["slots"]
+                    if slot["note_id"] == "PN-CST-2025-04" and slot["year"] == 2026)
+    assert boundary["evidence"][0]["accession"] == "00033"
+    assert exported["source"]["publication_notes"][0]["statement"].startswith("出版方函")
+
+
+def test_note_change_produces_new_run_id(client, crossyear):
+    first = client.post("/api/runs", json={"data": crossyear}).json()
+    altered = {**crossyear,
+               "publication_notes": [{**crossyear["publication_notes"][0],
+                                      "statement": "出版方函 2026-编字 08 号：修订说明。"},
+                                     *crossyear["publication_notes"][1:]]}
+    second = client.post("/api/runs", json={"data": altered}).json()
+    assert second["id"] != first["id"] and second["reused"] is False
